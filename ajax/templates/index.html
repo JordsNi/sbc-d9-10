@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX Form Submission</title>
+    <style>
+      body {
+          font-family: 'Arial', sans-serif;
+          background-color: #f0f0f0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+      }
+      
+      .demo {
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          max-width: 400px;
+          width: 100%;
+      }
+      
+      form {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+      }
+      
+      label {
+          font-size: 18px;
+          margin-bottom: 5px;
+          color: #555;
+      }
+      
+      input[type="text"],
+      input[type="date"],
+      button {
+          padding: 10px;
+          margin: 5px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          font-size: 16px;
+      }
+      
+      button {
+          background-color: #ff80b3;
+          color: #fff;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+      }
+      
+      button:hover {
+          background-color: #ff4da6;
+      }
+      
+      #response {
+          margin-top: 20px;
+          font-size: 16px;
+          color: #555;
+          text-align: left;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          background-color: #f9f9f9;
+      }
+      
+      .message {
+          font-weight: bold;
+          color: #ff80b3;
+          margin-bottom: 10px;
+      }
+  </style>
+</head>
+<body>
+    <div class="demo">
+        <form id="myForm">
+            <label for="fname">Name: </label>
+            <input type="text" id="fname" name="fname"><br><br>
+            <label for="bday">Birthdate: </label>
+            <input type="date" id="bday" name="bday"><br><br>
+            <button type="button" onclick="submitForm()">Submit</button>
+        </form>
+    </div>
+
+    <div id="response"></div> 
+
+    <script>
+        function submitForm() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("response").innerHTML = this.responseText;
+                }
+            };
+            
+            var formData = new FormData(document.getElementById("myForm"));
+            
+            xhttp.open("POST", "/submit", true); 
+            xhttp.send(formData);
+        }
+    </script>
+
+    <script>
+        function calculateAge() {
+            var bdayInput = document.getElementById("bday").value;
+            var bday = new Date(bdayInput);
+            var today = new Date();
+            var age = today.getFullYear() - bday.getFullYear();
+            
+            if (today.getMonth() < bday.getMonth() || (today.getMonth() == bday.getMonth() && today.getDate() < bday.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+        
+        function submitForm() {
+            var age = calculateAge();
+            
+            var formData = new FormData(document.getElementById("myForm"));
+            formData.append("age", age);
+            
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("response").innerHTML = this.responseText;
+                }
+            };
+
+            xhttp.open("POST", "/submit", true); 
+            xhttp.send(formData);
+        }
+    </script>
+</body>
+</html>
